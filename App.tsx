@@ -1,44 +1,80 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import React from 'react';
 import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+  Dimensions,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
+import { COLORS } from './assets/variables/vars';
+import Home from './screens/Home';
+import Sidebar from './components/Sidebar';
+import CustomText from './components/CustomText';
+import Category from './screens/Category';
+import LustLounge from './screens/LustLounge';
+
+// Dummy screens (replace later)
+
+
+const Drawer = createDrawerNavigator();
+
+function DrawerNavigator() {
+  return (
+    <Drawer.Navigator
+      drawerContent={props => <Sidebar {...props} />}
+      screenOptions={{
+        headerShown: false,
+
+        // 👇 THIS IS THE IMPORTANT PART
+        drawerType: 'front',
+
+        overlayColor: 'rgba(0,0,0,0.45)',
+
+        drawerStyle: {
+          backgroundColor: 'transparent',
+          width: Dimensions.get('window').width / 1.5,
+        },
+
+        sceneStyle: {
+          backgroundColor: 'transparent',
+        },
+      }}
+    >
+      <Drawer.Screen name="Home" component={Home} />
+      <Drawer.Screen options={{freezeOnBlur:true}} name="category" component={Category} />
+      <Drawer.Screen options={{freezeOnBlur:true}} name="lustlounge" component={LustLounge} />
+    </Drawer.Navigator>
+  );
+}
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
+      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+        <StatusBar
+          backgroundColor={COLORS.color_primary}
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        />
+        <NavigationContainer>
+          <DrawerNavigator />
+        </NavigationContainer>
+      </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
+    backgroundColor: COLORS.color_primary,
   },
 });
 
