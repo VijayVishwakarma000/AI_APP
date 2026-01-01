@@ -18,9 +18,11 @@ import Sidebar from './components/Sidebar';
 import CustomText from './components/CustomText';
 import Category from './screens/Category';
 import LustLounge from './screens/LustLounge';
+import UserProvider from './hooks/UserProvider';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'react-native-gesture-handler';
 
 // Dummy screens (replace later)
-
 
 const Drawer = createDrawerNavigator();
 
@@ -47,8 +49,16 @@ function DrawerNavigator() {
       }}
     >
       <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen options={{freezeOnBlur:true}} name="category" component={Category} />
-      <Drawer.Screen options={{freezeOnBlur:true}} name="lustlounge" component={LustLounge} />
+      {/* <Drawer.Screen
+        options={{ freezeOnBlur: true }}
+        name="category"
+        component={Category}
+      /> */}
+      {/* <Drawer.Screen
+        options={{ freezeOnBlur: true }}
+        name="lustlounge"
+        component={LustLounge}
+      /> */}
     </Drawer.Navigator>
   );
 }
@@ -58,15 +68,18 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-        <StatusBar
-          backgroundColor={COLORS.color_primary}
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        />
-        <NavigationContainer>
-          <DrawerNavigator />
-        </NavigationContainer>
-      </SafeAreaView>
+      <UserProvider>
+        <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+          <StatusBar
+            backgroundColor={COLORS.color_primary}
+            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            />
+          <NavigationContainer>
+            <DrawerNavigator />
+          </NavigationContainer>
+      
+        </SafeAreaView>
+      </UserProvider>
     </SafeAreaProvider>
   );
 }

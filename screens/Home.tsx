@@ -9,8 +9,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
+  Button,
 } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { COLORS } from '../assets/variables/vars';
 import CustomText from '../components/CustomText';
 const WIDTH = Dimensions.get('screen').width;
@@ -32,6 +33,16 @@ import Sidebar from '../components/Sidebar';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import { useDrawerStatus } from '@react-navigation/drawer';
 import ChatContext from '../hooks/ChatContext';
+import GirlfriendsBottomSheet, {
+  BottomSheetHandle,
+} from '../components/GirlfriendsBottomSheet';
+import BottomSheet, { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import {
+  BottomSheetMethods,
+  BottomSheetModalMethods,
+} from '@gorhom/bottom-sheet/lib/typescript/types';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import GirlfriendsBottomSheetModal from '../components/GirlfriendsBottomSheet';
 
 let options = [
   {
@@ -47,7 +58,28 @@ let options = [
   //   icon: Sparkle,
   // },
 ];
-
+const bots = [
+  {
+    id: '1',
+    title: 'Luna',
+    image: 'https://picsum.photos/seed/luna/200',
+  },
+  {
+    id: '2',
+    title: 'Nova',
+    image: 'https://picsum.photos/seed/nova/200',
+  },
+  {
+    id: '3',
+    title: 'Raven',
+    image: 'https://picsum.photos/seed/raven/200',
+  },
+  {
+    id: '4',
+    title: 'Scarlet',
+    image: 'https://picsum.photos/seed/scarlet/200',
+  },
+];
 function ImageCounter() {
   const ImageCounterStyle = StyleSheet.create({
     btn: {
@@ -111,7 +143,12 @@ function ImageRatio() {
   );
 }
 
+type CharacterType = {
+  title: string;
+  description: string;
+};
 const Home = () => {
+  const sheetRef = useRef<BottomSheetHandle>(null);
   const [open, setOpen] = useState(false);
   const navigation = useNavigation();
   const isDrawerOpen = useDrawerStatus() === 'open';
@@ -156,6 +193,22 @@ const Home = () => {
     navigation.dispatch(DrawerActions.toggleDrawer());
   };
 
+    const [data, setData] = useState<CharacterType[]>([]);
+    const [selectedTitle, setSelectedTitle] = useState<string>("");
+
+    /* ---------- FETCH ---------- */
+    const fetchCharacters = useCallback(async () => {
+      const res = await fetch('http://192.168.29.97:3000/api/characters');
+      const json = await res.json();
+      setSelectedTitle(json.body[0].title)
+      setData(json.body ?? []);
+    }, []);
+
+    useEffect(() => {
+      fetchCharacters();
+    }, [fetchCharacters]);
+
+
   React.useEffect(() => {
     Animated.timing(animation, {
       toValue: isDrawerOpen ? 1 : 0,
@@ -167,54 +220,65 @@ const Home = () => {
 
   // const [activeOption, setactiveOption] = useState(options[0].title);
 
- 
   return (
+          <GestureHandlerRootView style={{flex:1}}>
+   
     <View style={styles.body}>
       {/* <Sidebar open={open} setOpen={setOpen} /> */}
-    
-        <View style={styles.topbar}>
-          <View style={styles.logo}>
-            <Image
-              style={styles.logoimg}
-              source={require('../assets/icon.png')}
-            />
-            <CustomText size="text_large">JENNIE</CustomText>
-          </View>
-
-          <Pressable onPress={toggleMenu} style={styles.menuButton}>
-            {/* TOP BAR (40px) */}
-            <Animated.View
-              style={[
-                {
-                  marginLeft: 7,
-                  marginBottom: open ? 20 : 20,
-                  ...styles.barLarge,
-                },
-                {
-                  transform: [
-                    { translateY: translateYTop },
-                    { rotate: rotateTop },
-                  ],
-                },
-              ]}
-            />
-
-            {/* BOTTOM BAR (30px) */}
-            <Animated.View
-              style={[
-                { width: open ? 30 : 20, ...styles.barSmall },
-                {
-                  transform: [
-                    { translateX: barOffset },
-                    { translateY: translateYBottom },
-                    { rotate: rotateBottom },
-                  ],
-                },
-              ]}
-            />
-          </Pressable>
+        <GirlfriendsBottomSheet
+          ref={sheetRef}
+          data={data}
+          selectedTitle={selectedTitle}
+          setSelectedTitle={setSelectedTitle}
+          onSelect={bot => {
+            console.log(bot);
+            sheetRef.current?.close();
+          }}
+        />
+ 
+      <View style={styles.topbar}>
+        <View style={styles.logo}>
+          <Image
+            style={styles.logoimg}
+            source={require('../assets/icon.png')}
+          />
+          <CustomText  size="text_large">{selectedTitle.toUpperCase()}</CustomText>
         </View>
-        {/* <View style={styles.options}>
+
+        <Pressable onPress={toggleMenu} style={styles.menuButton}>
+          {/* TOP BAR (40px) */}
+          <Animated.View
+            style={[
+              {
+                marginLeft: 7,
+                marginBottom: open ? 20 : 20,
+                ...styles.barLarge,
+              },
+              {
+                transform: [
+                  { translateY: translateYTop },
+                  { rotate: rotateTop },
+                ],
+              },
+            ]}
+          />
+
+          {/* BOTTOM BAR (30px) */}
+          <Animated.View
+            style={[
+              { width: open ? 30 : 20, ...styles.barSmall },
+              {
+                transform: [
+                  { translateX: barOffset },
+                  { translateY: translateYBottom },
+                  { rotate: rotateBottom },
+                ],
+              },
+            ]}
+          />
+        </Pressable>
+      </View>
+      {/* <View style={styles.options}>
         {options.map(item => {
           const isActive = activeOption === item.title;
 
@@ -247,9 +311,8 @@ const Home = () => {
         })}
       </View> */}
 
-        <View style={styles.chatparent}>
-        
-        <ChatContext>
+      <View style={styles.chatparent}>
+        <ChatContext selectedTitle={selectedTitle} sheetRef={sheetRef as React.RefObject<BottomSheetHandle>}>
           <View style={styles.home_center}>
             <Image
               style={styles.homeimg}
@@ -265,16 +328,17 @@ const Home = () => {
             </CustomText>
           </View>
         </ChatContext>
+      </View>
+ 
 
-        </View>
-        {/* <CustomButton  imgsrc={require('../assets/starsingle.png')} >Filters</CustomButton> */}
+      {/* <CustomButton  imgsrc={require('../assets/starsingle.png')} >Filters</CustomButton> */}
 
-        {/* <View style={{marginTop:10,flexDirection:"row",gap:5}} >
+      {/* <View style={{marginTop:10,flexDirection:"row",gap:5}} >
             <ImageCounter/>
             <ImageRatio/>
         </View> */}
 
-        {/* <Pressable style={styles.generatebtn} >
+      {/* <Pressable style={styles.generatebtn} >
             <CustomText  style={{color:COLORS.color_primary,fontSize:20,}} >Search</CustomText>
             <Image 
             style={styles.star}
@@ -282,10 +346,11 @@ const Home = () => {
             />
         </Pressable> */}
 
-        {/* <View style={{marginTop:40}} >
+      {/* <View style={{marginTop:40}} >
          <ImageStack/>
        </View> */}
     </View>
+     </GestureHandlerRootView>
   );
 };
 const styles = StyleSheet.create({

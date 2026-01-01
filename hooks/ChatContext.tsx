@@ -1,10 +1,13 @@
-import { View, Text, Platform, Keyboard, Animated } from 'react-native';
-import React, { FC, ReactNode, useRef, useState } from 'react';
+import { View, Text, Platform, Keyboard, Animated, Button } from 'react-native';
+import React, { FC, ReactNode, Ref, RefObject, useRef, useState } from 'react';
 import PromptField from '../components/PromptField';
 import { ChatMessage, chatMessages } from '../assets/mock';
 import Chat from '../components/Chat';
+import GirlfriendsBottomSheet, { BottomSheetHandle } from '../components/GirlfriendsBottomSheet';
+import BottomSheet from '@gorhom/bottom-sheet';
+import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-const ChatContext = ({ children }: { children: ReactNode }) => {
+const ChatContext = ({ selectedTitle,children,sheetRef }: {selectedTitle:string, children: ReactNode,sheetRef: RefObject<BottomSheetHandle> }) => {
   const keyboardOffset = useRef(new Animated.Value(0)).current;
   const [isTyping, setIsTyping] = useState(false);
   const [prompt, setPrompt] = useState('');
@@ -68,6 +71,7 @@ const ChatContext = ({ children }: { children: ReactNode }) => {
   }
   return (
     <>
+   
       {messages.length > 0 ? (
         <Chat isTyping={isTyping} messages={messages} />
       ) : (
@@ -82,9 +86,15 @@ const ChatContext = ({ children }: { children: ReactNode }) => {
         <PromptField
           prompt={prompt}
           setPrompt={setPrompt}
+          openBots={() => {
+            sheetRef.current?.open();
+          }}
+          selectedTitle={selectedTitle}
           sendMessages={sendMessages}
         />
+   
       </Animated.View>
+          
     </>
   );
 };

@@ -11,6 +11,7 @@ import {
   Sun,
   Moon,
   Heart,
+  Venus,
 } from 'lucide-react-native';
 import { DrawerContentComponentProps } from '@react-navigation/drawer';
 import ChatList from './ChatList';
@@ -45,27 +46,29 @@ const Sidebar = ({ navigation, state }: DrawerContentComponentProps) => {
             active={activeRoute === 'Home'}
             onPress={() => navigation.navigate('Home')}
           />
-          <DrawerItem
-            icon={History}
-            label="Category"
+          {/* <DrawerItem
+            icon={Venus}
+            label="AI Girlfriends"
             active={activeRoute === 'category'}
             onPress={() => navigation.navigate('category')}
-          />
-          <DrawerItem
+          /> */}
+          {/* <DrawerItem
             icon={Heart}
             label="Lust Lounge"
             active={activeRoute === 'lustlounge'}
             onPress={() => navigation.navigate('lustlounge')}
-          />
+          /> */}
         </View>
 
         <View style={styles.chats_list}>
           <View style={styles.divider} />
           <CustomText
-            style={{ color: COLORS.color_secondary }}
+            style={{ color: COLORS.color_secondary,
+              paddingHorizontal:5
+             }}
             size="text_small"
           >
-            Friends (10)
+            Chats 
           </CustomText>
           <ChatList />
         </View>

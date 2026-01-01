@@ -1,59 +1,101 @@
 import {
   View,
-  Text,
   Image,
   TextInput,
   StyleSheet,
   Pressable,
 } from 'react-native';
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import { COLORS, FONTS, TEXT } from '../assets/variables/vars';
-import Switch from './Switch';
-import { Box, ChevronRight, SendHorizonal } from 'lucide-react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import { COLORS, TEXT } from '../assets/variables/vars';
+import { ChevronRight, SendHorizonal } from 'lucide-react-native';
 import CustomText from './CustomText';
 
-interface PromtProps{
-prompt:string,
-setPrompt:Dispatch<SetStateAction<string>>,
-sendMessages:Function
+interface PromptProps {
+  prompt: string;
+  setPrompt: Dispatch<SetStateAction<string>>;
+  sendMessages: () => void;
+  openBots: () => void;
+  selectedTitle:string;
 }
 
-const PromptField = ({prompt,setPrompt,sendMessages}:PromtProps) => {
- 
-  return (
-    <View style={styles.container}>
-      {/* Top Input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Describe what you like and let AI do the magic!.."
-        placeholderTextColor="#9A9A9A"
-        multiline
-        value={prompt}
-        onChangeText={setPrompt}
-        textAlignVertical="top"
-      />
+const PromptField = ({
+  openBots,
+  prompt,
+  selectedTitle,
+  setPrompt,
+  sendMessages,
+}: PromptProps) => {
+  const [focused, setFocused] = useState(false);
 
-      {/* Bottom Row */}
-      <View style={styles.bottomRow}>
-        <Pressable style={styles.aiChip}>
-          <Image
-            source={require('../assets/pfp.jpg')}
-            style={styles.aiAvatar}
-          />
-          <CustomText size="text_small">Luna AI</CustomText>
-          <ChevronRight size={18} color={COLORS.color_tertiary} />
-        </Pressable>
-        <Pressable onPress={()=>sendMessages()} style={styles.iconBtn}>
-          <SendHorizonal size={18} color={COLORS.color_tertiary} />
-        </Pressable>
-      </View>
+  return (
+      <View style={styles.wrapper}>
+  {focused && (
+    <LinearGradient
+      colors={[
+        '#ff3cac',
+        '#784ba0',
+        '#2b86c5',
+        '#43e97b',
+        '#f9ca24',
+      ]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={styles.gradientBorder}
+    />
+  )}
+
+  <View style={styles.container}>
+    {/* INPUT */}
+    <TextInput
+      style={styles.input}
+      placeholder="Describe what you like and let AI do the magic!.."
+      placeholderTextColor="#9A9A9A"
+      multiline
+      value={prompt}
+      onChangeText={setPrompt}
+      textAlignVertical="top"
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+    />
+
+    {/* BOTTOM ROW */}
+    <View style={styles.bottomRow}>
+      <Pressable onPress={openBots} style={styles.aiChip}>
+        <Image
+          source={{uri:'http://192.168.29.97:3000/image'}}
+          style={styles.aiAvatar}
+        />
+        <CustomText size="text_small">{selectedTitle}</CustomText>
+        <ChevronRight size={18} color={COLORS.color_tertiary} />
+      </Pressable>
+
+      <Pressable onPress={sendMessages} style={styles.iconBtn}>
+        <SendHorizonal size={18} color={COLORS.color_tertiary} />
+      </Pressable>
     </View>
+  </View>
+</View>
+
   );
 };
-const styles = StyleSheet.create({
+
+export default PromptField;
+ const styles = StyleSheet.create({
+  wrapper: {
+    position: 'relative',
+    borderRadius: 16,
+    padding: 2,              // 👈 creates visible border
+  },
+
+  gradientBorder: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 16,
+  },
+
   container: {
     backgroundColor: COLORS.color_selective,
-    borderRadius: 15,
+    borderRadius: 14,        // 👈 slightly smaller
     padding: 14,
     gap: 12,
   },
@@ -64,11 +106,18 @@ const styles = StyleSheet.create({
     fontSize: TEXT.text_small,
     lineHeight: 20,
   },
+
+  bottomRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
   aiChip: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    paddingHorizontal: 5,
+    paddingHorizontal: 6,
     paddingVertical: 6,
     paddingRight: 8,
     borderRadius: 20,
@@ -77,42 +126,10 @@ const styles = StyleSheet.create({
     borderColor: '#2A2A2A',
   },
 
-  aiChipActive: {
-    backgroundColor: COLORS.color_tertiary,
-    borderColor: COLORS.color_tertiary,
-  },
-
   aiAvatar: {
     width: 22,
     height: 22,
     borderRadius: 11,
-  },
-
-  aiName: {
-    fontSize: 13,
-    color: '#9A9A9A',
-    fontWeight: '600',
-  },
-
-  aiNameActive: {
-    color: COLORS.color_primary,
-  },
-
-  bottomRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-
-  leftRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-
-  label: {
-    color: '#CFCFCF',
-    fontSize: 13,
   },
 
   iconBtn: {
@@ -124,5 +141,3 @@ const styles = StyleSheet.create({
     backgroundColor: '#2A2A2A',
   },
 });
-
-export default PromptField;

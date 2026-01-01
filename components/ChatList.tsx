@@ -12,6 +12,7 @@ import CustomText from './CustomText';
 import { COLORS } from '../assets/variables/vars';
 import { Trash } from 'lucide-react-native';
 import { ChatMessage, chatMessages } from '../assets/mock';
+import NoChatsFound from './NoChatsFound';
 
 const ChatItem = ({ active, data }: { active: boolean; data: ChatMessage }) => {
   return (
@@ -60,9 +61,10 @@ const ChatList = () => {
         keyExtractor={item => item.id}
         extraData={selectedChat.id}
         scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
         removeClippedSubviews={false}
         decelerationRate="fast"
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={<NoChatsFound/>}
         renderItem={({ item, index }) => {
           return (
             <Pressable
@@ -81,7 +83,7 @@ const ChatList = () => {
 const styles = StyleSheet.create({
   list: {
     paddingVertical: 10,
-    height: Dimensions.get('screen').height - 450,
+    height: Dimensions.get('screen').height - 420,
   },
 });
 
