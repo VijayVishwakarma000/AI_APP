@@ -18,14 +18,15 @@ import Sidebar from './components/Sidebar';
 import CustomText from './components/CustomText';
 import Category from './screens/Category';
 import LustLounge from './screens/LustLounge';
-import UserProvider from './hooks/UserProvider';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import UserProvider, { useUser } from './hooks/UserProvider';
 import 'react-native-gesture-handler';
+import Register from './screens/Auth/Register';
+import Login from './screens/Auth/Login';
+import AuthContext from './hooks/AuthContext';
 
 // Dummy screens (replace later)
 
 const Drawer = createDrawerNavigator();
-
 function DrawerNavigator() {
   return (
     <Drawer.Navigator
@@ -65,7 +66,6 @@ function DrawerNavigator() {
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
-
   return (
     <SafeAreaProvider>
       <UserProvider>
@@ -73,11 +73,12 @@ function App() {
           <StatusBar
             backgroundColor={COLORS.color_primary}
             barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-            />
-          <NavigationContainer>
-            <DrawerNavigator />
-          </NavigationContainer>
-      
+          />
+            <NavigationContainer>
+          <AuthContext>
+              <DrawerNavigator />
+          </AuthContext>
+            </NavigationContainer>
         </SafeAreaView>
       </UserProvider>
     </SafeAreaProvider>

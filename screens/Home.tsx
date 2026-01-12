@@ -60,26 +60,65 @@ let options = [
 ];
 const bots = [
   {
-    id: '1',
-    title: 'Luna',
-    image: 'https://picsum.photos/seed/luna/200',
+    title: "Clara",
+    description:
+      "hardcore submissive focused on heavy degradation, humiliation, and non-con fantasies.",
+  },
+
+  {
+    title: "Trixie",
+ 
+    description:
+      "lobotomized bimbo with plastic tits and zero iq, existing solely to be used as a fuck-doll.",
+  },
+
+  {
+    title: "Raven",
+  
+    description:
+      "goth exhibitionist and public cum dump into gangbangs, sharing, and cuckquean scenarios.",
+  },
+
+  {
+    title: "Chloe",
+   
+    description:
+      "insatiable nympho neighbor with zero self-control, addicted to rough, secret hookups.",
+  },
+
+  {
+    title: "Jade",
+   
+    description:
+      "extreme pain slut and masochist who requires violence and breathplay to feel pleasure.",
   },
   {
-    id: '2',
-    title: 'Nova',
-    image: 'https://picsum.photos/seed/nova/200',
+    title: "Maya",
+    description:
+      "the soulmate. focuses on deep emotional bonding, vanilla romance, and pure affection.",
   },
+
   {
-    id: '3',
-    title: 'Raven',
-    image: 'https://picsum.photos/seed/raven/200',
+    title: "Elena",
+    description:
+      "stress-relief tradwife. maternal energy, domestic service, and soft, comforting intimacy.",
   },
+
   {
-    id: '4',
-    title: 'Scarlet',
-    image: 'https://picsum.photos/seed/scarlet/200',
+    title: "Sophie",
+    
+    description:
+      "the innocent student. shy, inexperienced, and looking for a gentle hero to guide her.",
+  },
+
+  {
+    title: "Isabella",
+
+    description:
+      "obsessive romantic. fiery, possessive, and focused on intense spiritual connection and tantra.",
   },
 ];
+
 function ImageCounter() {
   const ImageCounterStyle = StyleSheet.create({
     btn: {
@@ -198,10 +237,10 @@ const Home = () => {
 
     /* ---------- FETCH ---------- */
     const fetchCharacters = useCallback(async () => {
-      const res = await fetch('http://192.168.29.97:3000/api/characters');
-      const json = await res.json();
-      setSelectedTitle(json.body[0].title)
-      setData(json.body ?? []);
+      // const res = await fetch('http://192.168.29.97:3000/api/characters');
+      // const json = await res.json();
+      setData(bots);
+      setSelectedTitle(bots[0].title)
     }, []);
 
     useEffect(() => {
@@ -326,7 +365,11 @@ const Home = () => {
               I’m your creative AI assistant.
               {'\n'}Ask anything or generate something amazing.
             </CustomText>
+
           </View>
+            <View style={{marginTop:10,}} >
+         <ImageStack/>
+       </View>
         </ChatContext>
       </View>
  
@@ -346,9 +389,7 @@ const Home = () => {
             />
         </Pressable> */}
 
-      {/* <View style={{marginTop:40}} >
-         <ImageStack/>
-       </View> */}
+    
     </View>
      </GestureHandlerRootView>
   );

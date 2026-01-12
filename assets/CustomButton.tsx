@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet, Dimensions ,Image, ImageSource, ImageSourcePropType} from 'react-native'
+import { View, Text, Pressable, StyleSheet, Dimensions ,Image, ImageSource, ImageSourcePropType, GestureResponderEvent, ActivityIndicator} from 'react-native'
 import React from 'react'
 import { COLORS } from './variables/vars'
  
@@ -9,22 +9,27 @@ const HEIGHT = Dimensions.get('screen').height;
 interface props  {
     children:string,
     imgsrc?:ImageSourcePropType ,
-    icon?:React.ReactNode
-}
+    icon?:React.ReactNode,
+    onclick?:(e:GestureResponderEvent)=>void,
+    loading?:boolean
+} 
 
 
-const CustomButton = ({children,imgsrc,icon}:props) => {
+const CustomButton = ({children,imgsrc,icon,loading,onclick}:props) => {
   return (
    
-        <Pressable style={styles.filterbtn}>
-                {imgsrc? <Image 
+        <Pressable onPress={onclick} style={styles.filterbtn}>
+            {
+              loading?<ActivityIndicator/>:
+                imgsrc? <Image 
             style={styles.starsingle}
             source={imgsrc}
-            />:icon?icon:""}
+            />:icon?icon: <CustomText  size='text_body' >{children}</CustomText>
+            }
              
+           
 
-            <CustomText style={{flexGrow:1}}  size='text_body' >{children}</CustomText>
-            <ChevronRightIcon  size={30} color={COLORS.color_tertiary} />
+            {/* <ChevronRightIcon  size={30} color={COLORS.color_tertiary} /> */}
         </Pressable>
   )
 }
@@ -32,14 +37,13 @@ const CustomButton = ({children,imgsrc,icon}:props) => {
 const styles = StyleSheet.create({
      filterbtn:{
             backgroundColor:COLORS.color_selective,
-        borderRadius:15,
+        borderRadius:10,
         marginTop:10,
         flexDirection:"row",
         alignItems:"center",
-        paddingHorizontal:15,
-        paddingRight:10,
-        paddingVertical:4,
-        gap:10
+        padding:12,
+        gap:10,
+        justifyContent:"center"
       },
        starsingle:{
           height:HEIGHT/16,

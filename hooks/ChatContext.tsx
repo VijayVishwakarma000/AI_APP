@@ -43,36 +43,14 @@ const ChatContext = ({ selectedTitle,children,sheetRef }: {selectedTitle:string,
   function sendMessages() {
     keyboardOffset.setValue(0);
     Keyboard.dismiss();
-    const userMsg: ChatMessage = {
-      id: `msg-${Date.now()}`,
-      sender: 'user',
-      text: prompt,
-      avatar: 'https://picsum.photos/seed/user-1/200/200',
-      createdAt: new Date().toISOString(),
-    };
-
-    setMessages(prev => [...prev, userMsg]);
     setPrompt('');
-    setIsTyping(true);
 
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev,
-        {
-          id: `msg-${Date.now() + 1}`,
-          sender: 'bot',
-          text: 'I’m here… tell me more 🤍',
-          avatar: 'https://picsum.photos/seed/ai-gf-typing/200/200',
-          createdAt: new Date().toISOString(),
-        },
-      ]);
-      setIsTyping(false);
-    }, 1200);
+   
   }
   return (
     <>
    
-      {messages.length > 0 ? (
+      {messages.length < 0 ? (
         <Chat isTyping={isTyping} messages={messages} />
       ) : (
         children

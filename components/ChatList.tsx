@@ -83,7 +83,7 @@ const ChatList = () => {
 const styles = StyleSheet.create({
   list: {
     paddingVertical: 10,
-    height: Dimensions.get('screen').height - 420,
+    height: Dimensions.get('screen').height - 330,
   },
 });
 
